@@ -25,6 +25,7 @@ int main(){
 	int n;
 	cin >> n;
 	int first13 = 0; //Saturday
+	weekDay[0] = 1; //this is the first 13th
 	int val=0; //date if 1900 was the 0 AD
 	for (int i=0; i<n; i++){
 		int* arrPtr;
@@ -44,6 +45,10 @@ int main(){
 			weekDay[first13] += 1;
 		}	
 	}
+
+	weekDay[first13]--; //one more has been added when there was no next month 
+
+	cout << "total days after 1900 is "<< val << endl;
 
 	for (int i=0; i<7; i++)
 		cout<<weekDay[i]<<" ";
