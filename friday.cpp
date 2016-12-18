@@ -13,9 +13,8 @@ bool isLeapYear(int n){
 }
 
 int main(){
-
-	//freopen("friday.in",'r',stdin);
-	//freopen("friday.out",'w',stdout);
+	freopen("friday.in", "r", stdin);
+  	freopen("friday.out", "w", stdout);
 
 	int regular[] = {31,28,31,30,31,30,31,31,30,31,30,31};
 	int leap[] = {31,29,31,30,31,30,31,31,30,31,30,31};
@@ -26,21 +25,13 @@ int main(){
 	cin >> n;
 	int first13 = 0; //Saturday
 	weekDay[0] = 1; //this is the first 13th
-	int val=0; //date if 1900 was the 0 AD
 	for (int i=0; i<n; i++){
 		int* arrPtr;
-		if (isLeapYear(1900+i)) {
-			arrPtr = leap;
-			cout<<1900+i<<" is a leap year. Feb has "<<arrPtr[1]<<" days"<<endl;
-		}
-		else {
-			arrPtr = regular;
-			cout<<1900+i<<" is not a leap year. Feb has "<<arrPtr[1]<<" days"<<endl;
-		}
+		if (isLeapYear(1900+i)) arrPtr = leap;
+		else arrPtr = regular;
+
 		for (int j=0; j<12; j++){
-			val+=arrPtr[j];
-			int steps = val%7;
-			first13 += steps;
+			first13 += arrPtr[j];
 			first13 %= 7;
 			weekDay[first13] += 1;
 		}	
@@ -48,11 +39,10 @@ int main(){
 
 	weekDay[first13]--; //one more has been added when there was no next month 
 
-	cout << "total days after 1900 is "<< val << endl;
-
-	for (int i=0; i<7; i++)
-		cout<<weekDay[i]<<" ";
-	cout<<endl;	
+	cout<<weekDay[0];
+	for (int i=1; i<7; i++)
+		cout<<" "<<weekDay[i];
+	cout<<endl;
 
 	return 0;
 }
