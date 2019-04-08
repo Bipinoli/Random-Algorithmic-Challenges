@@ -1,4 +1,5 @@
 /*
+	USACO
 	TASK: barn1
 	LANG: C++14
 	USER: bipilol1
