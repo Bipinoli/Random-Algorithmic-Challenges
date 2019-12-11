@@ -1,6 +1,9 @@
-import java.util.*;
-import java.lang.*;
-import java.io.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.Map;
+import java.util.Queue;
+import java.util.Scanner;
 
 public class StronglyConnectedComponents
 {
@@ -10,7 +13,7 @@ public class StronglyConnectedComponents
 		int t = sc.nextInt();
 		
 		while(t-- > 0) {
-			ArrayList<ArrayList<Integer>> list = new ArrayList<>();
+			ArrayList<ArrayList<Integer>> list = new ArrayList<ArrayList<Integer>>();
 			
 			int nov = sc.nextInt();
 			int edg = sc.nextInt();
@@ -25,7 +28,14 @@ public class StronglyConnectedComponents
 				list.get(u).add(v);
 			}
 			
-			System.out.println(new SCC().numOfSCC(list, nov+1));
+			System.out.print("SCC #: ");
+			System.out.println(SCC.numOfSCC(list, nov+1));
+			for (ArrayList<Integer> lst: SCC.getSCC(list, nov+1)) {
+				for (int i: lst) {
+					System.out.print("" + i + ",");
+				}
+				System.out.println();
+			}
 		}
 	}
 }
@@ -35,7 +45,36 @@ public class StronglyConnectedComponents
 class SCC
 {
     
-    public int numOfSCC(ArrayList<ArrayList<Integer>> list, int N)
+	public static ArrayList<ArrayList<Integer>> getSCC(ArrayList<ArrayList<Integer>> list, int N) {
+		int[] seenOrder = new int[N];
+        int[] minFound = new int[N];
+        boolean[] dead = new boolean[N];
+        for (int i=0; i<N; i++)
+            seenOrder[i] = -1;
+        
+        Integer seenCount = 0;
+        
+        for (int i=0; i<N; i++) {
+            if (seenOrder[i] == -1) {
+                dfs(i, list, N, seenOrder, minFound, seenCount, dead);
+            }
+        }
+        
+        ArrayList<ArrayList<Integer>> retval = new ArrayList<ArrayList<Integer>>();
+        Map<Integer, ArrayList<Integer>> map = new HashMap<Integer, ArrayList<Integer>>();
+        for (int i=0; i<N-1; i++) {
+        	int key = minFound[i];
+        	if (!map.containsKey(key)) map.put(key, new ArrayList<Integer>());
+        	map.get(key).add(i);
+        }
+        for (Integer key: map.keySet()) {
+        	retval.add(map.get(key));
+        }
+        return retval;
+	}
+	
+	
+    public static int numOfSCC(ArrayList<ArrayList<Integer>> list, int N)
     {
         int[] seenOrder = new int[N];
         int[] minFound = new int[N];
@@ -58,8 +97,9 @@ class SCC
         }
         return retval;
     }
-    
-    private int dfs(int root, ArrayList<ArrayList<Integer>> list, int N, int[] seenOrder, int[] minFound, Integer seenCount, boolean[] dead) {
+
+
+    private static int dfs(int root, ArrayList<ArrayList<Integer>> list, int N, int[] seenOrder, int[] minFound, Integer seenCount, boolean[] dead) {
         if (seenOrder[root] != -1) {
            return seenOrder[root];     
         }
@@ -72,4 +112,27 @@ class SCC
         dead[root] = true;
         return minFound[root];
     }
+
+    
+    private static ArrayList<Integer> trace(int root, ArrayList<ArrayList<Integer>> list, int N) {
+    	ArrayList<Integer> reachable = new ArrayList<Integer>();
+    	Queue<Integer> q = new LinkedList<Integer>();
+    	
+    	boolean[] seen = new boolean[N];
+    	q.add(root);
+    	
+    	while (!q.isEmpty()) {
+    		int rt = q.remove();
+    		seen[rt] = true;
+    		reachable.add(rt);
+    		
+    		for (int v: list.get(rt)) {
+    			if (!seen[v])
+    				q.add(v);
+    		}	
+    	}
+    	
+    	return reachable;
+    }
 }
+
