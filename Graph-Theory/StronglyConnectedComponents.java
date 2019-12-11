@@ -32,7 +32,6 @@ public class StronglyConnectedComponents
 
 
 
-
 class SCC
 {
     
@@ -40,12 +39,15 @@ class SCC
     {
         int[] seenOrder = new int[N];
         int[] minFound = new int[N];
+        boolean[] dead = new boolean[N];
         for (int i=0; i<N; i++)
             seenOrder[i] = -1;
         
+        Integer seenCount = 0;
+        
         for (int i=0; i<N; i++) {
             if (seenOrder[i] == -1) {
-                dfs(i, list, N, seenOrder, minFound, 0);
+                dfs(i, list, N, seenOrder, minFound, seenCount, dead);
             }
         }
         
@@ -57,15 +59,17 @@ class SCC
         return retval;
     }
     
-    private int dfs(int root, ArrayList<ArrayList<Integer>> list, int N, int[] seenOrder, int[] minFound, int seenCount) {
+    private int dfs(int root, ArrayList<ArrayList<Integer>> list, int N, int[] seenOrder, int[] minFound, Integer seenCount, boolean[] dead) {
         if (seenOrder[root] != -1) {
            return seenOrder[root];     
         }
         seenOrder[root] = ++seenCount;
         minFound[root] = seenOrder[root];
         for (int v: list.get(root)) {
-            minFound[root] = Math.min(minFound[root], dfs(v, list, N, seenOrder, minFound, seenCount));
+            if (!dead[v])
+                minFound[root] = Math.min(minFound[root], dfs(v, list, N, seenOrder, minFound, seenCount, dead));
         }
+        dead[root] = true;
         return minFound[root];
     }
 }
