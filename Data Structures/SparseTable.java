@@ -30,7 +30,7 @@ class SPTable<T> {
 		this.n = n;
 		this.depth = (int) log2(n) + 1;
 		
-		// constructing Sparse Tree
+		// constructing Sparse Table
 		for (int d=0; d<this.depth; d++) {
 			tree.add(new ArrayList<T>());
 			if (d == 0) {
