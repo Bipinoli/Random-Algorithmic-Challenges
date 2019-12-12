@@ -1,11 +1,11 @@
 import java.util.ArrayList;
 import java.util.Scanner;
 
-public class SparseTree {
+public class SparseTable {
 	public static void main(String[] args) {
 		Integer[] array = new Integer[] {1, 3, 2, 5, 8, 7, 3, 4, 0};
-		SPTree<Integer> sparseTree = new SPTree<Integer>(9, array, new RangeMinimum());
-		sparseTree.displayTree();
+		SPTable<Integer> sparseTree = new SPTable<Integer>(9, array, new RangeMinimum());
+		sparseTree.displayTable();
 		
 		Scanner scanner = new Scanner(System.in);
 		
@@ -19,13 +19,13 @@ public class SparseTree {
 }
 
 
-class SPTree<T> {
+class SPTable<T> {
 	private int n;
 	private int depth;
 	private ArrayList<ArrayList<T>> tree = new ArrayList<ArrayList<T>>();
 	private RangeComparator<T> comparator;
 	
-	public SPTree(int n, T[] array, RangeComparator<T> comparator) {
+	public SPTable(int n, T[] array, RangeComparator<T> comparator) {
 		this.comparator = comparator;
 		this.n = n;
 		this.depth = (int) log2(n) + 1;
@@ -68,7 +68,7 @@ class SPTree<T> {
 	
 
 	
-	public void displayTree() {
+	public void displayTable() {
 		for (int i=0; i<this.depth; i++) {
 			for (T a: this.tree.get(i))
 				System.out.print("" + a + ", ");
