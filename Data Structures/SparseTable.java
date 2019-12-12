@@ -4,8 +4,8 @@ import java.util.Scanner;
 public class SparseTable {
 	public static void main(String[] args) {
 		Integer[] array = new Integer[] {1, 3, 2, 5, 8, 7, 3, 4, 0};
-		SPTable<Integer> sparseTree = new SPTable<Integer>(9, array, new RangeMinimum());
-		sparseTree.displayTable();
+		SPTable<Integer> sparseTable = new SPTable<Integer>(9, array, new RangeMinimum());
+		sparseTable.displayTree();
 		
 		Scanner scanner = new Scanner(System.in);
 		
@@ -13,7 +13,7 @@ public class SparseTable {
 			System.out.print("range query: [l,r] = ");
 			int l = scanner.nextInt();
 			int r = scanner.nextInt();
-			System.out.println("" + sparseTree.rangeQuery(l, r));
+			System.out.println("" + sparseTable.rangeQuery(l, r));
 		}
 	}
 }
@@ -68,7 +68,7 @@ class SPTable<T> {
 	
 
 	
-	public void displayTable() {
+	public void displayTree() {
 		for (int i=0; i<this.depth; i++) {
 			for (T a: this.tree.get(i))
 				System.out.print("" + a + ", ");
