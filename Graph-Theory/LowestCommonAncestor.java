@@ -1,7 +1,7 @@
 import java.util.ArrayList;
 import java.util.Scanner;
 
-public class LeastCommonAncestor {
+public class LowestCommonAncestor {
 	public static void main(String[] args) {
 		ArrayList<ArrayList<Integer>> tree = new ArrayList<ArrayList<Integer>>();
 		int n = 10;
