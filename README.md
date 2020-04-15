@@ -21,7 +21,7 @@ I know there are a lot of learning resources in the internet relevant to competi
 
 
 ## Advancing further
-- [e-Maxx](e-maxx.ru/) (tip: use google translate extension :P)
+- [e-Maxx](http://e-maxx.ru/algo/) (tip: use google translate extension :P)
 
 
 ## Final Thoughts
