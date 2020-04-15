@@ -8,7 +8,7 @@ I know there are a lot of learning resources in the internet relevant to competi
 - [Competitive Programmer's Handbook](https://cses.fi/book/book.pdf)
 
 
-## Inspiration and lessons from legends
+## Inspiration and lessons from Pros
 
 - [Errichto](https://www.youtube.com/channel/UCBr_Fu6q9iHYQCh13jmpbrg)
 - [Algorithm Live](https://www.youtube.com/channel/UCBLr7ISa_YDy5qeATupf26w)
