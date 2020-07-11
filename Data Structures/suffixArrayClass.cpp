@@ -28,6 +28,7 @@ class SuffixArray {
         }
 
     private:
+        // Time Complexity: O(nlgn * lgn)
         vector<int> buildRank() {
             vector<int> r(n);
             // sz = 1
