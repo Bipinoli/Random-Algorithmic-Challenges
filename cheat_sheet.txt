@@ -1,0 +1,591 @@
+
+g++ -O2 program.cpp -o program -std=c++11
+
+sort(v.begin(), v.end(), [&](int a, int b) { return a < b; });
+
+-----------------------------------------------
+TOC:
+- template ==
+- grammar parser (from tutor) ==
+- knapsack ==
+- LIS (nlog(n)) ==
+- coin change ==
+- dijkstra ==
+- Bellman Ford ==
+- Bellman Ford faster ==
+- Floyd Warshall ==
+- topological sort ==
+- finding bridges ==
+- finding articulation points
+- strongly connected components (Tarjan's algorithm) ==
+- next-permutation ==
+
+-----------------------------------------------
+# template
+
+
+// compile (for debugging): g++ -Wall -Wextra -fsanitize=undefined,address -D_GLIBCXX_DEBUG -g <file>
+// compile (as on judge): g++ -x c++ -Wall -O2 -static -pipe <file>
+// Output file will be a.out in both cases
+#include <bits/stdc++.h>
+
+using namespace std;
+
+typedef long long ll;
+
+#define debug(x) \
+    (cerr << #x << ": " << (x) << endl)
+
+int main() {
+    // fast IO
+    ios_base::sync_with_stdio(false);
+    cin.tie(NULL);
+
+
+    return 0;
+}
+
+
+-----------------------------------------------
+
+# grammar parser (from tutor)
+
+// Parser for the grammar of the tasks sumup, covering and simplify.
+
+#include <bits/stdc++.h>
+using namespace std;
+
+
+struct tree {
+    vector<shared_ptr<tree>> children;
+    char op = 0;
+    long long value = -1;
+
+    tree(vector<shared_ptr<tree>> children, char op): children(children), op(op) {}
+    explicit tree(long long value): value(value) {}
+};
+
+
+string expression;
+int pos;
+
+shared_ptr<tree> parse_stree();
+
+shared_ptr<tree> parse_tree()
+{
+    vector<shared_ptr<tree>> children;
+    char op = expression[pos];
+    ++pos;
+    while (expression[pos] != ')') {
+        ++pos;
+        children.push_back(parse_stree());
+    }
+    ++pos;
+    return make_shared<tree>(children, op);
+}
+
+shared_ptr<tree> parse_int()
+{
+    int result = 0;
+    while (expression[pos] >= '0' && expression[pos] <= '9') {
+        result = 10 * result + expression[pos] - '0';
+        ++pos;
+    }
+    return make_shared<tree>(result);
+}
+
+shared_ptr<tree> parse_stree()
+{
+    char c = expression[pos];
+    if (c == '+' || c == '*') {
+        return parse_tree();
+    } else {
+        return parse_int();
+    }
+}
+
+
+int main()
+{
+    ios_base::sync_with_stdio(false);
+
+    getline(cin, expression);
+    shared_ptr<tree> t = parse_stree();
+
+    // TODO: Do something with t
+}
+
+
+-----------------------------------------------
+# knapsack
+
+#include <bits/stdc++.h>
+using namespace std;
+int knapSack(int W, int wt[], int val[], int n)
+{
+    // making and initializing dp array
+    int dp[W + 1];
+    memset(dp, 0, sizeof(dp));
+ 
+    for (int i = 1; i < n + 1; i++) {
+        for (int w = W; w >= 0; w--) {
+ 
+            if (wt[i - 1] <= w)
+                // finding the maximum value
+                dp[w] = max(dp[w],
+                            dp[w - wt[i - 1]] + val[i - 1]);
+        }
+    }
+    return dp[W]; // returning the maximum value of knapsack
+}
+int main()
+{
+    int val[] = { 60, 100, 120 };
+    int wt[] = { 10, 20, 30 };
+    int W = 50;
+    int n = sizeof(val) / sizeof(val[0]);
+    cout << knapSack(W, wt, val, n);
+    return 0;
+}
+
+-----------------------------------------------
+# next-permutation
+
+#include <iostream>
+#include <string>
+#include <array>
+#include <algorithm>
+
+using namespace std;
+
+int main() {
+    // fast IO
+    ios_base::sync_with_stdio(false);
+    cin.tie(NULL);  
+
+    const int N = 11;
+    int grid[N][N];
+
+    for (int i=0; i<N; i++) {
+        for (int j=0; j<N; j++) {
+            cin >> grid[i][j];
+        }
+    }
+
+    int ans = -1e8;
+    array<int, N> choice = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10,};
+    do {
+        int sum = 0;
+        for (int i=0; i < N; i++) {
+            sum += grid[i][choice[i]];
+        }
+        ans = max(ans, sum);
+    } while (next_permutation(choice.begin(), choice.end()));
+    cout << ans << "\n";
+}
+
+
+-----------------------------------------------
+# LIS (nlog(n))
+
+
+#include <iostream>
+#include <algorithm>
+#include <vector>
+
+using namespace std;
+
+int main() {
+    // fast IO
+    ios_base::sync_with_stdio(false);
+    cin.tie(NULL);
+
+    int n, x;
+    cin >> n >> x;
+
+    int arr[n];
+    for (int i=0; i<n; i++) {
+        cin >> arr[i];
+    }
+
+    // Is there a subsequence with the given length? If so then what is the smallest item at the end of it?
+    // This array will be monotonically increasing, therefore we can do binary search in it
+    vector<int> length_ending_at;
+
+    int dp[n];
+    int ans = 1;
+    for (int i=0; i<n; i++) {
+        int max_len_in_left;
+        int index = lower_bound(length_ending_at.begin(), length_ending_at.end(), arr[i]) - length_ending_at.begin();
+        if (index == length_ending_at.size())
+            max_len_in_left = length_ending_at.size();
+        else
+            max_len_in_left = index;
+        dp[i] = 1 + max_len_in_left;
+        ans = max(ans, dp[i]);
+        if (dp[i] > length_ending_at.size()) {
+            length_ending_at.push_back(arr[i]);
+        }
+        length_ending_at[dp[i]-1] = min(length_ending_at[dp[i]-1], arr[i]);
+    }
+
+    cout << ans << "\n";
+}
+
+-----------------------------------------------
+# coin change
+
+
+// C++ program for coin change problem.
+#include<bits/stdc++.h>
+ 
+using namespace std;
+ 
+int count( int S[], int m, int n )
+{
+    int i, j, x, y;
+ 
+    // We need n+1 rows as the table
+    // is constructed in bottom up
+    // manner using the base case 0
+    // value case (n = 0)
+    int table[n + 1][m];
+     
+    // Fill the entries for 0
+    // value case (n = 0)
+    for (i = 0; i < m; i++)
+        table[0][i] = 1;
+ 
+    // Fill rest of the table entries
+    // in bottom up manner
+    for (i = 1; i < n + 1; i++)
+    {
+        for (j = 0; j < m; j++)
+        {
+            // Count of solutions including S[j]
+            x = (i-S[j] >= 0) ? table[i - S[j]][j] : 0;
+ 
+            // Count of solutions excluding S[j]
+            y = (j >= 1) ? table[i][j - 1] : 0;
+ 
+            // total count
+            table[i][j] = x + y;
+        }
+    }
+    return table[n][m - 1];
+}
+ 
+// Driver Code
+int main()
+{
+    int arr[] = {1, 2, 3};
+    int m = sizeof(arr)/sizeof(arr[0]);
+    int n = 4;
+    cout << count(arr, m, n);
+    return 0;
+}
+
+
+-----------------------------------------------
+# dijkstra
+
+
+#include <iostream>
+#include <queue>
+#include <vector>
+#include <utility>
+#include <limits>
+
+using namespace std;
+
+typedef long long ll;
+
+int main() {
+    // fast io
+    ios_base::sync_with_stdio(true);
+    cin.tie(NULL);
+
+    ll n, b, m, t;
+    cin >> n >> b >> m >> t;
+
+    vector<vector<pair<ll,ll>>> graph(n+1);
+    while (b--) {
+        ll a, b, l;
+        cin >> a >> b >> l;
+        graph[a].push_back(make_pair(b, l));
+        graph[b].push_back(make_pair(a, l));
+    }
+
+    while (m--) {
+        ll a, b, l;
+        cin >> a >> b >> l;
+    }
+
+    auto compare = [&](pair<ll,ll> p1, pair<ll,ll> p2) { return p1.second > p2.second; };
+    priority_queue<pair<ll, ll>, vector<pair<ll, ll>>, decltype(compare)> pq(compare);
+    
+    const auto INF = numeric_limits<ll>::max();
+    vector<ll> dist(n+1, INF);
+    
+    pq.push(make_pair(1, 0));
+    dist[1] = 0;
+
+    while (!pq.empty()) {
+        auto front = pq.top(); pq.pop();
+        ll v = front.first, d = front.second;
+        if (d > dist[v]) continue;
+        for (auto p: graph[v]) {
+            ll u = p.first;
+            ll w = p.second;
+            if (dist[u] > dist[v] + w) {
+                dist[u] = dist[v] + w;
+                pq.push({u, dist[u]});
+            }
+        }
+    }
+
+    cout << dist[n] << "\n";
+}
+
+
+-----------------------------------------------
+# topological sort
+
+#include <iostream>
+#include <map>
+#include <vector>
+#include <string>
+
+
+using namespace std;
+
+bool dfs(int root, vector<vector<int>>& graph, vector<bool>& explored, vector<bool>& dirty, vector<int>& explored_nodes) {
+    dirty[root] = true;
+    for (auto child: graph[root]) {
+        if (explored[child]) continue;
+        if (dirty[child]) return false;
+        if (!dfs(child, graph, explored, dirty, explored_nodes)) return false;
+    }
+    explored[root] = true;
+    explored_nodes.push_back(root);
+    return true;
+}
+
+
+vector<int> topsort(vector<vector<int>>& graph) {
+    int n = graph.size();
+    vector<bool> explored(n, false);
+    vector<bool> dirty(n, false);
+    vector<int> explored_nodes;
+    vector<int> ans;
+    for (int i=0; i<n; i++) {
+        if (explored[i]) continue;
+        if (!dfs(i, graph, explored, dirty, explored_nodes))
+            return ans;
+    }
+    for (int i=n-1; i>=0; i--) {
+        ans.push_back(explored_nodes[i]);
+    }
+    return ans;
+}
+
+
+int main() {
+    // fast io
+    ios_base::sync_with_stdio(false);
+    cin.tie(NULL);
+
+    int m;
+    cin >> m;
+
+    map<string, int> name2num;
+    map<int, string> num2name;
+
+    vector<vector<int>> graph;
+
+    int n = 0;
+    while (m--) {
+        string a, op, b;
+        cin >> a >> op >> b;
+        if (op == "<") {
+            string temp = a;
+            a = b;
+            b = temp;
+        }
+        if (name2num.find(a) == name2num.end()) {
+            n++;
+            name2num[a] = n-1;
+            num2name[n-1] = a;
+            vector<int> v;
+            graph.push_back(v);
+        }
+        if (name2num.find(b) == name2num.end()) {
+            n++;
+            name2num[b] = n-1;
+            num2name[n-1] = b;
+            vector<int> v;
+            graph.push_back(v);
+        }
+        int u = name2num[a];
+        int v = name2num[b];
+        graph[u].push_back(v);
+    }
+
+    vector<int> topsorted = topsort(graph);
+    if (topsorted.size() == 0) {
+        cout << "impossible" << "\n";
+        return 0;
+    }
+    cout << "possible" << "\n";
+    for (auto it: topsorted) {
+        cout << num2name[it] << " ";
+    }
+    cout << "\n";
+}
+
+
+-----------------------------------------------
+# Bellman Ford
+
+vector<int> dist(V, INF);
+dist[start] = 0;
+for (int i=0; i < V - 1: i++) 
+    for (int v = 0; v < V; u++) 
+        for (auto p: adj[v]) {
+            int u = p.first;
+            int w = p.second;
+            dist[u] = min(dist[u], dist[v] + w);
+        }
+
+
+
+-----------------------------------------------
+# Bellman Ford faster
+
+vector<int> dist (V, INF);
+queue<int> Q;
+vector<bool> inQ (V, false);
+dist[start] = 0; Q.push(start); inQ[start] = true;
+while (!Q.empty()) {
+    int v = Q.front(); Q.pop(); inQ[v] = false;
+    for (auto p: adj[v]) {
+        int u = p.first;
+        int w = p.second;
+        if (dist[u] > dist[v] + w) {
+            dist[u] = dist[v] + w;
+            if (!inQ[u]) {
+                Q.push(u);
+                inQ[u] = true;
+            }
+        }
+    }
+}
+
+-----------------------------------------------
+# Floyd Warshall
+
+vector<vector<int>> adj; // adjacency matrix!
+for (int k=0; k < V; k++) 
+    for (int i=0; i < V; i++) 
+        for (int j=0; j < V; j++) 
+            adj[i][j] = min(adj[i][j], adj[i][k] + adj[k][j]);
+
+
+-----------------------------------------------
+# strongly connected components (Tarjan's algorithm)
+
+void dfsForSCC(int root, int& pos, vector<int>& position, vector<int>& minReach, stack<int>& stk, vector<bool>& inStack, vector<vector<int>>& scc, vector<vector<int>>& graph) {
+    position[root] = pos;
+    minReach[root] = pos;
+    pos += 1;
+    stk.push(root);
+    inStack[root] = true;
+
+    for (int it: graph[root]) {
+        if (position[it] == -1) {
+            dfsForSCC(it, pos, position, minReach, stk, inStack, scc, graph);
+            minReach[root] = min(minReach[root], minReach[it]);
+        } else if (inStack[it]) {
+            // back edge
+            minReach[root] = min(minReach[root], minReach[it]);
+        }
+    }
+
+    if (position[root] == minReach[root]) {
+        vector<int> comps;
+        while (true) {
+            int nd = stk.top(); stk.pop();
+            inStack[nd] = false;
+            comps.push_back(nd);
+            if (position[nd] == minReach[nd]) {
+                break;
+            }
+        }
+        scc.push_back(comps);
+    }
+}
+
+
+vector<vector<int>> tarjanSCC(vector<vector<int>>& graph) {
+    int n = graph.size();
+    vector<vector<int>> scc;
+    vector<int> position(n, -1);
+    vector<int> minReach(n, -1);
+    stack<int> stk;
+    vector<bool> inStack(n, false);
+    int pos = 0;
+
+    for (int i=0; i<n; i++) {
+        if (position[i] == -1) {
+            dfsForSCC(i, pos, position, minReach, stk, inStack, scc, graph);
+        }
+    }
+
+    return scc;
+}
+
+
+-----------------------------------------------
+# finding bridges
+
+int bridgeDFS(int root, int parent, int& pos, vector<int>& position, vector<int>& minReach, vector<bool>& explored, vector<vector<int>>& graph) {
+    position[root] = pos;
+    minReach[root] = pos;
+    pos += 1;
+    for (int node: graph[root]) {
+        if (explored[node]) continue;
+        if (node == parent) continue;
+        if (position[node] == -1) {
+            minReach[root] = min(minReach[root], bridgeDFS(node, root, pos, position, minReach, explored, graph));
+            continue;
+        }
+        minReach[root] = min(minReach[root], position[node]);
+    }
+    explored[root] = true;
+    return minReach[root];
+}
+
+
+vector<pair<int,int>> findBridges(vector<vector<int>>& graph) {
+    int n = graph.size();
+    vector<bool> explored(n, false);
+    vector<int> position(n, -1);
+    vector<int> minReach(n, -1);
+    int pos = 0;
+
+    for (int i=0; i<n; i++) {
+        if (!explored[i]) 
+            bridgeDFS(i, -1, pos, position, minReach, explored, graph);
+    }
+
+    vector<pair<int,int>> bridges;
+    for (int u=0; u<n; u++) {
+        for (int v: graph[u]) {
+            if (minReach[v] > position[u]) {
+                bridges.push_back({u, v});
+            }
+        }
+    }
+
+    return bridges;
+}
