@@ -599,14 +599,17 @@ vector<pair<int,int>> findBridges(vector<vector<int>>& graph) {
 
 class UnionFind {
 private:
-    vector<int> parent;
-    vector<int> size;
+    int n;
+    int* parent;
+    int* size;
 public:
     UnionFind(int n) {
-        size.resize(n, 1);
-        parent.resize(n);
+        this->n = n;
+        parent = new int[n];
+        size = new int[n];
         for (int i=0; i<n; i++) {
             parent[i] = i;
+            size[i] = 1;
         }
     }
     int findSet(int v) {
@@ -654,4 +657,7 @@ for (auto edge: edgeList) {
 
 -----------------------------------------------
 # Tarjan's offline algorithm for lowest common ancestor (LCA)
+
+reference: https://cp-algorithms.com/graph/lca_tarjan.html#implementation
+
 
