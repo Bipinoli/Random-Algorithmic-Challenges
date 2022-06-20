@@ -19,6 +19,10 @@ TOC:
 - finding articulation points
 - strongly connected components (Tarjan's algorithm) ==
 - next-permutation ==
+- disjoint set union (DSU / union-find) ==
+- prim's minimum spanning tree (MST)
+- kruskal's minimum spanning tree (MST) ==
+- Tarjan's offline algorithm for lowest common ancestor (LCA)
 
 -----------------------------------------------
 # template
@@ -589,3 +593,65 @@ vector<pair<int,int>> findBridges(vector<vector<int>>& graph) {
 
     return bridges;
 }
+
+-----------------------------------------------
+# disjoint set union (DSU / union-find)
+
+class UnionFind {
+private:
+    vector<int> parent;
+    vector<int> size;
+public:
+    UnionFind(int n) {
+        size.resize(n, 1);
+        parent.resize(n);
+        for (int i=0; i<n; i++) {
+            parent[i] = i;
+        }
+    }
+    int findSet(int v) {
+        if (v == parent[v])
+            return v;
+        return parent[v] = findSet(parent[v]);
+    }
+    bool inSameSet(int u, int v) {
+        int st1 = findSet(u);
+        int st2 = findSet(v);
+        return st1 == st2;
+    }
+    void unionSets(int u, int v) {
+        int pu = findSet(u);
+        int pv = findSet(v);
+        if (pu == pv) return;
+        if (size[pv] > size[pu]) {
+            int temp = pu;
+            pu = pv;
+            pv = temp;
+        }
+        parent[pv] = pu;
+        size[pu] += size[pv];
+    }
+};
+
+-----------------------------------------------
+# kruskal's minimum spanning tree (MST)
+
+auto UF = UnionFind(V);
+
+// <weight, u, v>
+vector<tuple<int, int, int>> edgeList;
+// sort increasing by weight
+sort(edgeList.begin(), edgeList.end());
+
+for (auto edge: edgeList) {
+    int w, u, v;
+    tie(w, u, v) = edge; // upack tuple
+    if (!UF.inSameSet(u, v)) {
+        cout << "Add " << u << "-" << v << " to MST" << endl;
+        UF.unionSets(u, v);
+    }
+}
+
+-----------------------------------------------
+# Tarjan's offline algorithm for lowest common ancestor (LCA)
+
