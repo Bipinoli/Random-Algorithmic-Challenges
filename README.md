@@ -21,6 +21,7 @@ I know there are a lot of learning resources in the internet relevant to competi
 
 
 ## Advancing further
+- [CP algorithms](https://cp-algorithms.com/)
 - [e-Maxx](http://e-maxx.ru/algo/) (tip: use google translate extension :P)
 
 
