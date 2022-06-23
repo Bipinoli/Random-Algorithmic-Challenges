@@ -6,6 +6,7 @@ sort(v.begin(), v.end(), [&](int a, int b) { return a < b; });
 -----------------------------------------------
 TOC:
 - template ==
+- check program's memory usage ==
 - grammar parser (from tutor) ==
 - knapsack ==
 - LIS (nlog(n)) ==
@@ -20,9 +21,8 @@ TOC:
 - strongly connected components (Tarjan's algorithm) ==
 - next-permutation ==
 - disjoint set union (DSU / union-find) ==
-- prim's minimum spanning tree (MST)
 - kruskal's minimum spanning tree (MST) ==
-- Tarjan's offline algorithm for lowest common ancestor (LCA)
+- Tarjan's offline algorithm for lowest common ancestor (LCA) ==
 
 -----------------------------------------------
 # template
@@ -47,6 +47,19 @@ int main() {
 
 
     return 0;
+}
+
+-----------------------------------------------
+# check program's memory usage
+
+#include <sys/resource.h>
+
+long get_mem_usage() {
+    // total memory including the ones saved in paging files in bytes
+    struct rusage resourceUsage;
+
+    getrusage(RUSAGE_SELF, &resourceUsage);
+    return resourceUsage.ru_maxrss;
 }
 
 
@@ -660,4 +673,91 @@ for (auto edge: edgeList) {
 
 reference: https://cp-algorithms.com/graph/lca_tarjan.html#implementation
 
+#include <iostream>
+#include <vector>
+#include <tuple>
+#include <map>
+#include <algorithm>
 
+using namespace std;
+
+typedef long long ll;
+
+
+class UnionFind {
+private:
+    int n;
+    int* parent;
+    int* size;
+public:
+    UnionFind(int n) {
+        this->n = n;
+        parent = new int[n];
+        size = new int[n];
+        for (int i=0; i<n; i++) {
+            parent[i] = i;
+            size[i] = 1;
+        }
+    }
+    int findSet(int v) {
+        if (v == parent[v])
+            return v;
+        return parent[v] = findSet(parent[v]);
+    }
+    bool inSameSet(int u, int v) {
+        int st1 = findSet(u);
+        int st2 = findSet(v);
+        return st1 == st2;
+    }
+    void unionSets(int u, int v) {
+        int pu = findSet(u);
+        int pv = findSet(v);
+        if (pu == pv) return;
+        if (size[pv] > size[pu]) {
+            int temp = pu;
+            pu = pv;
+            pv = temp;
+        }
+        parent[pv] = pu;
+        size[pu] += size[pv];
+    }
+};
+
+void dfsForLCA(int u, int parent, vector<vector<int>>& tree, UnionFind& UF, vector<int>& ancestor, vector<bool>& visited, vector<vector<int>>& queries, vector<tuple<int,int,int>>& lca) {
+    for (int v: tree[u]) {
+        if (v != parent) {
+            dfsForLCA(v, u, tree, UF, ancestor, visited, queries, lca);
+            UF.unionSets(u, v);
+            ancestor[UF.findSet(u)] = u;
+        }
+    }
+    visited[u] = true;
+    for (int v: queries[u]) {
+        if (visited[v]) {
+            lca.push_back(make_tuple(u, v, ancestor[UF.findSet(v)]));
+        }
+    }
+}
+
+vector<tuple<int,int,int>> TarjanLCA(int root, vector<vector<int>>& tree, vector<tuple<int, int>>& lcaQueries) {
+    // returns [(u, v, lca),..]
+    int n = tree.size();
+    vector<tuple<int,int,int>> lca;
+    vector<bool> visited(n, false);
+    vector<int> ancestor(n);
+
+    for (int i=0; i<n; i++) ancestor[i] = i;
+    vector<vector<int>> queries(n);
+    for (tuple<int, int> query: lcaQueries) {
+        int u, v;
+        tie(u, v) = query;
+        queries[u].push_back(v);
+        queries[v].push_back(u);
+    }
+    UnionFind UF(n);
+    dfsForLCA(root, -1, tree, UF, ancestor, visited, queries, lca);
+    return lca;
+}
+
+-----------------------------------------------
+# 
