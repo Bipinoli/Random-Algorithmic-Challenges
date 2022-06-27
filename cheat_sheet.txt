@@ -805,12 +805,6 @@ ll bfsFlow(int s, int t, vector<vector<ll>>& graphMatrix, vector<int>& parent) {
 }
 
 ll maxFlow(int s, int t, vector<vector<ll>>& graphMatrix) {
-    /*
-        graphMatrix:
-        - -ve capacity not allowed
-        - -1 capacity means no edge
-        - >=0 capacity means edge
-    */
     int n = graphMatrix.size();
     ll flow = 0;
     vector<int> parent(n);
