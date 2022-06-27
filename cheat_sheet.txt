@@ -805,6 +805,8 @@ ll bfsFlow(int s, int t, vector<vector<ll>>& graphMatrix, vector<int>& parent) {
 }
 
 ll maxFlow(int s, int t, vector<vector<ll>>& graphMatrix) {
+    // forward capacity u -> v should be non zero but backward should be zero in the beginning when no 
+    // flow has flown in the direction u -> v
     int n = graphMatrix.size();
     ll flow = 0;
     vector<int> parent(n);
