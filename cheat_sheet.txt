@@ -23,6 +23,7 @@ TOC:
 - disjoint set union (DSU / union-find) ==
 - kruskal's minimum spanning tree (MST) ==
 - Tarjan's offline algorithm for lowest common ancestor (LCA) ==
+- Maximum flow - Ford-Fulkerson and Edmonds-Karp ==
 
 -----------------------------------------------
 # template
@@ -757,6 +758,77 @@ vector<tuple<int,int,int>> TarjanLCA(int root, vector<vector<int>>& tree, vector
     UnionFind UF(n);
     dfsForLCA(root, -1, tree, UF, ancestor, visited, queries, lca);
     return lca;
+}
+
+-----------------------------------------------
+# Maximum flow - Ford-Fulkerson and Edmonds-Karp
+
+#include <iostream>
+#include <vector>
+#include <queue>
+#include <utility>
+#include <limits>
+#include <algorithm>
+
+using namespace std;
+
+typedef long long ll;
+
+ll bfsFlow(int s, int t, vector<vector<ll>>& graphMatrix, vector<int>& parent) {
+    int n = graphMatrix.size();
+    const auto INF = numeric_limits<ll>::max();
+    
+    for (int i=0; i<n; i++) 
+        parent[i] = -1;
+    parent[s] = -2;
+
+    queue<pair<int, ll>> q;
+    q.push(make_pair(s, INF));
+
+    while (!q.empty()) {
+        int u = q.front().first;
+        ll flow = q.front().second;
+        q.pop();
+
+        for (int v=0; v<n; v++) {
+            if (v == u) continue;
+            if (parent[v] == -1 && graphMatrix[u][v] > 0) {
+                parent[v] = u;
+                ll newFlow = min(flow, graphMatrix[u][v]);
+                if (v == t) 
+                    return newFlow;
+                q.push(make_pair(v, newFlow));
+            }
+        }
+    }
+    return 0;
+}
+
+ll maxFlow(int s, int t, vector<vector<ll>>& graphMatrix) {
+    /*
+        graphMatrix:
+        - -ve capacity not allowed
+        - -1 capacity means no edge
+        - >=0 capacity means edge
+    */
+    int n = graphMatrix.size();
+    ll flow = 0;
+    vector<int> parent(n);
+
+    while (true) {
+        ll newFlow = bfsFlow(s, t, graphMatrix, parent);
+        if (newFlow == 0) break;
+        flow += newFlow;
+        int cur = t;
+        while (cur != s) {
+            int par = parent[cur];
+            graphMatrix[par][cur] -= newFlow;
+            graphMatrix[cur][par] += newFlow;
+            cur = par;
+        }
+    }
+
+    return flow;
 }
 
 -----------------------------------------------
