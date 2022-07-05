@@ -1,4 +1,3 @@
-
 g++ -O2 program.cpp -o program -std=c++11
 
 sort(v.begin(), v.end(), [&](int a, int b) { return a < b; });
@@ -776,8 +775,8 @@ using namespace std;
 
 typedef long long ll;
 
-ll bfsFlow(int s, int t, vector<vector<ll>>& graphMatrix, vector<int>& parent) {
-    int n = graphMatrix.size();
+ll bfsFlow(int s, int t, vector<vector<int>>& graph, vector<vector<ll>>& capacityMatrix, vector<int>& parent) {
+    int n = capacityMatrix.size();
     const auto INF = numeric_limits<ll>::max();
     
     for (int i=0; i<n; i++) 
@@ -792,11 +791,11 @@ ll bfsFlow(int s, int t, vector<vector<ll>>& graphMatrix, vector<int>& parent) {
         ll flow = q.front().second;
         q.pop();
 
-        for (int v=0; v<n; v++) {
+        for (int v: graph[u]) {
             if (v == u) continue;
-            if (parent[v] == -1 && graphMatrix[u][v] > 0) {
+            if (parent[v] == -1 && capacityMatrix[u][v] > 0) {
                 parent[v] = u;
-                ll newFlow = min(flow, graphMatrix[u][v]);
+                ll newFlow = min(flow, capacityMatrix[u][v]);
                 if (v == t) 
                     return newFlow;
                 q.push(make_pair(v, newFlow));
@@ -806,28 +805,30 @@ ll bfsFlow(int s, int t, vector<vector<ll>>& graphMatrix, vector<int>& parent) {
     return 0;
 }
 
-ll maxFlow(int s, int t, vector<vector<ll>>& graphMatrix) {
+ll maxFlow(int s, int t, vector<vector<int>>& graph, vector<vector<ll>>& capacityMatrix) {
+    // there should be edge both ways to allow the algorithm to correct the flow 
+    // i.e u -> v & v -> u
     // forward capacity u -> v should be non zero but backward should be zero in the beginning when no 
     // flow has flown in the direction u -> v
-    int n = graphMatrix.size();
+    int n = capacityMatrix.size();
     ll flow = 0;
     vector<int> parent(n);
 
     while (true) {
-        ll newFlow = bfsFlow(s, t, graphMatrix, parent);
+        ll newFlow = bfsFlow(s, t, graph, capacityMatrix, parent);
         if (newFlow == 0) break;
         flow += newFlow;
         int cur = t;
         while (cur != s) {
             int par = parent[cur];
-            graphMatrix[par][cur] -= newFlow;
-            graphMatrix[cur][par] += newFlow;
+            capacityMatrix[par][cur] -= newFlow;
+            capacityMatrix[cur][par] += newFlow;
             cur = par;
         }
     }
 
     return flow;
-}
+} 
 
 -----------------------------------------------
 # KMP algorithm
