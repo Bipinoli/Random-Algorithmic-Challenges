@@ -25,6 +25,7 @@ TOC:
 - Maximum flow - Ford-Fulkerson and Edmonds-Karp ==
 - KMP algorithm ==
 - Edit distance (DP) ==
+- Trie ==
 
 -----------------------------------------------
 # template
@@ -899,4 +900,27 @@ int editDistance(string s, string t) {
 }
 
 -----------------------------------------------
-#
+# Trie
+
+struct Trie {
+    bool isEndOfString = false;
+    map<char, Trie*> edges;
+    void insert(string &s, int i = 0) {
+        if (i == s.length()) {
+            isEndOfString = true;
+            return;
+        }
+        if (edges.count(s[i]) == 0)
+            edges[s[i]] = new Trie;
+        edges[s[i]]->insert(s, i+1);
+    }
+    bool contains(string &s, int i = 0) {
+        if (i == s.length())
+            return isEndOfString;
+        return edges.count(s[i]) > 0 &&
+            edges[s[i]]->contains(s, i+1);
+    }
+};
+
+-----------------------------------------------
+# 
