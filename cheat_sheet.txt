@@ -23,9 +23,15 @@ TOC:
 - kruskal's minimum spanning tree (MST) ==
 - Tarjan's offline algorithm for lowest common ancestor (LCA) ==
 - Maximum flow - Ford-Fulkerson and Edmonds-Karp ==
+- Hungarian algorithm
 - KMP algorithm ==
 - Edit distance (DP) ==
 - Trie ==
+- Fast exponentiation
+- Modulo of division - Fermat's little theorem idea
+- GCD - Euclidean algorithm
+- Binomial coefficients (DP)
+- 
 
 -----------------------------------------------
 # template
