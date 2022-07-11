@@ -27,10 +27,11 @@ TOC:
 - KMP algorithm ==
 - Edit distance (DP) ==
 - Trie ==
-- Fast exponentiation
+- Fast exponentiation ==
 - Modulo of division - Fermat's little theorem idea
-- GCD - Euclidean algorithm
+- GCD - Euclidean algorithm ==
 - Binomial coefficients (DP)
+- Segment tree ==
 - 
 
 -----------------------------------------------
@@ -929,4 +930,123 @@ struct Trie {
 };
 
 -----------------------------------------------
+# Segment tree
+
+#include <iostream>
+#include <vector>
+#include <cmath>
+#include <algorithm>
+
+using namespace std;
+
+class SegTree {
+private:
+    /* 
+        DEFAULT_VALUE and rangeOperation should be changed as per the nature of range query in segment tree
+        for eg:
+            range sum query:
+                DEFAULT_VALUE = 0
+                rangeOperation(a, b) = a + b
+            range min query:
+                DEFAULT_VALUE = infinity
+                rangeOperation(a, b) = min(a, b)
+            range gcd query:
+                DEFAULT_VALUE = 0
+                rangeOperation(a, b) = gcd(a, b)
+    */
+
+    const long long DEFAULT_VALUE = 0;
+    long long rangeOperation(long long a, long long b) {
+        return gcd(a, b);
+    }
+
+    vector<long long> values;
+    size_t size;
+
+    int parent(int i) {
+        return i / 2;
+    }
+    int left(int i) {
+        return 2 * i;
+    }
+    int right(int i) {
+        return 2 * i + 1;
+    }
+
+    void update(int i) {
+        values[i] = rangeOperation(values[left(i)], values[right(i)]);
+        if (i > 1) update(parent(i));
+    }
+
+    // Query operation on interval [i, j)
+    // current_node represents the interval [l, r)
+    long long query(int i, int j, int l, int r, int current_node) {
+        if (l >= j || r <= i) return DEFAULT_VALUE; // current interval and query interval don't intersect
+        if (l >= i && r <= j) return values[current_node]; // current interval contained in query interval
+
+        int m = (l + r) / 2;
+        return rangeOperation(query(i, j, l, m, left(current_node)), query(i, j, m, r, right(current_node)));
+    }
+
+public:
+    SegTree(size_t n) {
+	    size = 1<<(int)ceil(log2(n));
+        values.assign(2 * size, DEFAULT_VALUE);
+    }
+
+    SegTree(vector<long long> v): SegTree(v.size()) {
+        for (size_t i = 0; i < v.size(); i++) values[i + size] = v[i];
+        for (size_t i = size - 1; i > 0; i--) values[i] = rangeOperation(values[left(i)], values[right(i)]);
+    }
+
+    // Query sum of interval [i, j)
+    // index start from 0
+    long long query(int i, int j) {
+        return query(i, j, 0, size, 1);
+    }
+
+    // Set value at position i to val
+    // index start from 0
+    void update(int i, long long val) {
+        values[i + size] = val;
+        update(parent(i + size));
+    }
+
+    void display() {
+        for (size_t i=0; i < 2 * size; i++) {
+            cout << values[i] << " ";
+        }
+        cout << "\n";
+    }
+};
+
+-----------------------------------------------
+# GCD - Euclidean algorithm
+
+long long gcd(long long a, long long b) {
+    if (b > a) {
+        long long temp = a;
+        a = b;
+        b = temp;
+    }
+    if (b == 0) return a;
+    return gcd(b, a % b);
+}
+
+-----------------------------------------------
+# Fast exponentiation
+
+// Computes m^n modulo p
+ll fexp(ll m, ll n, ll p) {
+    if (n == 0) return 1;
+    else if (n % 2 == 1)
+        return (m * fexp(m, n-1, p)) % p;
+    else { // n is even
+        ll r = fexp(m, n/2, p);
+        return (r * r) % p;
+    }
+}
+
+-----------------------------------------------
 # 
+
