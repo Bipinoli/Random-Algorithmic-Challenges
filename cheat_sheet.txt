@@ -25,12 +25,13 @@ TOC:
 - Maximum flow - Ford-Fulkerson and Edmonds-Karp ==
 - Hungarian algorithm
 - KMP algorithm ==
+- Aho Corasick
 - Edit distance (DP) ==
 - Trie ==
 - Fast exponentiation ==
-- Modulo of division - Fermat's little theorem idea
+- Modulo of division - Fermat's little theorem idea ==
 - GCD - Euclidean algorithm ==
-- Binomial coefficients (DP)
+- Binomial coefficients == 
 - Segment tree ==
 - 
 
@@ -1036,8 +1037,8 @@ long long gcd(long long a, long long b) {
 -----------------------------------------------
 # Fast exponentiation
 
-// Computes m^n modulo p
 ll fexp(ll m, ll n, ll p) {
+    // Computes m^n modulo p
     if (n == 0) return 1;
     else if (n % 2 == 1)
         return (m * fexp(m, n-1, p)) % p;
@@ -1048,5 +1049,49 @@ ll fexp(ll m, ll n, ll p) {
 }
 
 -----------------------------------------------
-# 
+# Modulo of division - Fermat's little theorem idea
 
+By Fermet's little theorem 
+mod_inverse(a) = pow(a, p-2) mod p
+
+example:
+a = 2, p = 5, mod_inverse(a) = pow(2, 5-2) mod 5 = 8 mod 5 = 3
+(8 / 2) mod 5 = (8 * 3) mod 5 = ((8 mod 5) * (3 mod 5)) mod 5 = 9 mod 5 = 4
+
+code:
+ll modInverse(ll a, ll mod) {
+    return fexp(a, mod-2, mod) % mod;
+}
+
+-----------------------------------------------
+# Binomial coefficients
+
+(n, k) mod p = (n * .... * (n - k + 1) * mod_inverse(k!)) mod p 
+O(k + log(p))
+
+(n, k) = (n-1, k-1) + (n-1, k)
+O(n * k)
+
+ll factorial(ll k, ll p) {
+    ll retval = 1;
+    for (int i=1; i<=k; i++) {
+        retval *= i;
+        retval %= p;
+    }
+    return retval;
+}
+
+ll choose(ll n, ll k, ll p) {
+    // (n, k) mod p -> O(k + log(p))
+    ll retval = 1;
+    for (int i=0; i<k; i++) {
+        retval *= n - i;
+        retval %= p;
+    }
+    retval *= modInverse(factorial(k, p), p);
+    retval %= p;
+    return retval;
+}
+
+-----------------------------------------------
+# 
