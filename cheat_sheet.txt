@@ -23,7 +23,7 @@ TOC:
 - kruskal's minimum spanning tree (MST) ==
 - Tarjan's offline algorithm for lowest common ancestor (LCA) ==
 - Maximum flow - Ford-Fulkerson and Edmonds-Karp ==
-- Hungarian algorithm (minimum cost assignment algorithm)
+- Hungarian algorithm (minimum cost assignment algorithm) ==
 - KMP algorithm ==
 - Aho Corasick
 - Edit distance (DP) ==
