@@ -328,35 +328,18 @@ using namespace std;
 
 typedef long long ll;
 
-int main() {
-    // fast io
-    ios_base::sync_with_stdio(true);
-    cin.tie(NULL);
-
-    ll n, b, m, t;
-    cin >> n >> b >> m >> t;
-
-    vector<vector<pair<ll,ll>>> graph(n+1);
-    while (b--) {
-        ll a, b, l;
-        cin >> a >> b >> l;
-        graph[a].push_back(make_pair(b, l));
-        graph[b].push_back(make_pair(a, l));
-    }
-
-    while (m--) {
-        ll a, b, l;
-        cin >> a >> b >> l;
-    }
-
+ll dijkstra(ll src, ll dest, ll n, vector<vector<pair<ll,ll>>>& graph) {
+    // NOTE: it follows index starting at 1
+    // doesn't work with -ve weight
+    // u -> (v, w) form, where w = weight of connection u -> v
     auto compare = [&](pair<ll,ll> p1, pair<ll,ll> p2) { return p1.second > p2.second; };
     priority_queue<pair<ll, ll>, vector<pair<ll, ll>>, decltype(compare)> pq(compare);
     
     const auto INF = numeric_limits<ll>::max();
     vector<ll> dist(n+1, INF);
     
-    pq.push(make_pair(1, 0));
-    dist[1] = 0;
+    pq.push(make_pair(src, 0));
+    dist[src] = 0;
 
     while (!pq.empty()) {
         auto front = pq.top(); pq.pop();
@@ -372,7 +355,25 @@ int main() {
         }
     }
 
-    cout << dist[n] << "\n";
+    return dist[dest] == INF ? -1 : dist[dest];
+}
+
+int main() {
+    // fast io
+    ios_base::sync_with_stdio(true);
+    cin.tie(NULL);
+
+    int v, e, k;
+    cin >> v >> e >> k;
+
+    vector<vector<pair<ll,ll>>> graph(v+1);
+    while (e--) {
+        ll a, b, l;
+        cin >> a >> b >> l;
+        graph[a].push_back(make_pair(b, l));
+    }
+
+    cout << dijkstra(1, v, v, graph) << endl;
 }
 
 
