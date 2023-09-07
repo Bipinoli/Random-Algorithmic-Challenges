@@ -4,7 +4,6 @@ I know there are a lot of learning resources in the internet relevant to competi
 
 
 ## Getting Started
-
 - [Competitive Programmer's Handbook](https://cses.fi/book/book.pdf)
 
 

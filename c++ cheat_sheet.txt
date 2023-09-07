@@ -4,35 +4,35 @@ sort(v.begin(), v.end(), [&](int a, int b) { return a < b; });
 
 -----------------------------------------------
 TOC:
-- template ==
-- check program's memory usage ==
-- grammar parser (from tutor) ==
-- knapsack ==
-- Longest increasing subsequence - LIS (nlog(n)) ==
-- coin change ==
-- dijkstra ==
-- Bellman Ford ==
-- Bellman Ford faster ==
-- Floyd Warshall ==
-- topological sort ==
-- finding bridges ==
+- template ✅
+- check program's memory usage ✅
+- grammar parser (from tutor) ✅
+- knapsack ✅
+- Longest increasing subsequence - LIS (nlog(n)) ✅
+- coin change ✅
+- dijkstra ✅
+- Bellman Ford ✅
+- Bellman Ford faster ✅
+- Floyd Warshall ✅
+- topological sort ✅
+- finding bridges ✅
 - finding articulation points
-- strongly connected components (Tarjan's algorithm) ==
-- next-permutation ==
-- disjoint set union (DSU / union-find) ==
-- kruskal's minimum spanning tree (MST) ==
-- Tarjan's offline algorithm for lowest common ancestor (LCA) ==
-- Maximum flow - Ford-Fulkerson and Edmonds-Karp ==
-- Hungarian algorithm (minimum cost assignment algorithm) ==
-- KMP algorithm ==
+- strongly connected components (Tarjan's algorithm) ✅
+- next-permutation ✅
+- disjoint set union (DSU / union-find) ✅
+- kruskal's minimum spanning tree (MST) ✅
+- Tarjan's offline algorithm for lowest common ancestor (LCA) ✅
+- Maximum flow - Ford-Fulkerson and Edmonds-Karp ✅
+- Hungarian algorithm (minimum cost assignment algorithm) ✅
+- KMP algorithm ✅
 - Aho Corasick
-- Edit distance (DP) ==
-- Trie ==
-- Fast exponentiation ==
-- Modulo of division - Fermat's little theorem idea ==
-- GCD - Euclidean algorithm ==
-- Binomial coefficients == 
-- Segment tree ==
+- Edit distance (DP) ✅
+- Trie ✅
+- Fast exponentiation ✅
+- Modulo of division - Fermat's little theorem idea ✅
+- GCD - Euclidean algorithm ✅
+- Binomial coefficients ✅ 
+- Segment tree ✅
 - 
 
 -----------------------------------------------
