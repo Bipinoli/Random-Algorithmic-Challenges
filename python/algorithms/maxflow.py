@@ -1,5 +1,8 @@
 from collections import deque
 
+# Edmonds-Karp algorithm, O(VE^2)
+# https://cp-algorithms.com/graph/edmonds_karp.html
+
 def bfs(src, sink, n, connections, capacity):
     inf = 1e9 + 7
     inval = -1
