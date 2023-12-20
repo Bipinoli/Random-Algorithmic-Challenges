@@ -4,7 +4,7 @@
 /// When the partner is chosen, it needs to removed and the array needs to be readjusted to avoid the hole in the middle
 /// Shifting segment of array like this every time is too costly
 /// We can't use linkedlist to avoid this as we can't do binary search there
-/// So the best option is to use set datastructure in C++ which is impletemented in tree O(nlgn)
+/// So the best option is to use set datastructure in C++ which is impletemented in tree O(lgn)
 /// C++ set provides lower_bound() function which returns address of value just greater or equal to the needed
 /// we can use this for our task by negating the values
 
